@@ -20,7 +20,11 @@
 			animated
 		></b-progress>
 		<!-- PAGE 1 -->
-		<b-form class="m-2 ml-4 form-kuesioner" @submit.prevent="sendDataPost">
+		<b-form
+			class="m-2 ml-4 form-kuesioner"
+			ref="formQ"
+			@submit.prevent="sendDataPost()"
+		>
 			<div
 				v-for="(item, name, index) in formHalving(alternatif)"
 				class="mb-3"
@@ -55,19 +59,14 @@
 			>
 				Berikutnya
 			</b-button>
-			<b-button
-				block
-				v-else
-				variant="primary"
-				class="mb-2"
-				type="submit"
-			>
+			<b-button block v-else variant="primary" class="mb-2" type="submit">
 				Simpan Data
 			</b-button>
 		</b-form>
 	</div>
 </template>
 <script>
+import { sendData } from "../../database/config.js";
 export default {
 	data() {
 		return {
@@ -88,79 +87,79 @@ export default {
 				umur: {
 					label: "Pilih kategori yang sesuai umur anda sekarang",
 					opsi: [
-						"18 tahun - 24 tahun",
-						"25 tahun - 31 tahun",
-						"32 tahun - 38 tahun",
-						"39 tahun - 52 tahun",
-						"Di atas 52 tahun",
+						{ text: "18 tahun - 24 tahun", value: 1 },
+						{ text: "25 tahun - 31 tahun", value: 2 },
+						{ text: "32 tahun - 38 tahun", value: 3 },
+						{ text: "39 tahun - 52 tahun", value: 4 },
+						{ text: "Di atas 52 tahun", value: 5 },
 					],
 				},
 				status_pekerjaan: {
 					label: "Pilih kategori pekerjaan anda",
 					opsi: [
-						"Purna waktu",
-						"Paruh waktu",
-						"Wiraswasta",
-						"Semi pensiun",
-						"Pelajar",
-						"Tidak bekerja",
+						{ text: "Purna waktu", value: 1 },
+						{ text: "Paruh waktu", value: 2 },
+						{ text: "Wiraswasta", value: 3 },
+						{ text: "Semi pensiun", value: 4 },
+						{ text: "Pelajar", value: 5 },
+						{ text: "Tidak bekerja", value: 6 },
 					],
 				},
 				sumber_dana: {
 					label: "Pilih kategori sumber dana anda berasal",
 					opsi: [
-						"Penghasilan/Gaji",
-						"Tabungan",
-						"Dana pensiun",
-						"Keuntungan bisnis",
-						"Uang saku",
-						"Gabungan",
+						{ text: "Penghasilan/Gaji", value: 1 },
+						{ text: "Tabungan", value: 2 },
+						{ text: "Dana pensiun", value: 3 },
+						{ text: "Keuntungan bisnis", value: 4 },
+						{ text: "Uang saku", value: 5 },
+						{ text: "Gabungan", value: 6 },
 					],
 				},
 				penghasilan: {
 					label: "Pilih kategori jumlah penghasilan anda",
 					opsi: [
-						"Tidak berpenghasilan",
-						"1 juta - 3 juta",
-						"3 juta - 5 juta",
-						"6 juta - 10 juta",
-						"11 juta - 20 juta",
-						"Di atas 20 juta",
+						{ text: "Tidak berpenghasilan", value: 1 },
+						{ text: "1 juta - 3 juta", value: 2 },
+						{ text: "3 juta - 5 juta", value: 3 },
+						{ text: "6 juta - 10 juta", value: 4 },
+						{ text: "11 juta - 20 juta", value: 5 },
+						{ text: "Di atas 20 juta", value: 6 },
 					],
 				},
 				tujuan_investasi: {
 					label: "Pilih tujuan mengapa anda melakukan investasi",
 					opsi: [
-						"Dana pensiun",
-						"Melawan inflasi",
-						"Modal nikah",
-						"Modal bisnis",
-						"Modal rumah/properti",
+						{ text: "Dana pensiun", value: 1 },
+						{ text: "Melawan inflasi", value: 2 },
+						{ text: "Modal nikah", value: 3 },
+						{ text: "Modal bisnis", value: 4 },
+						{ text: "Modal rumah/properti", value: 5 },
 					],
 				},
 				tingkat_resiko: {
 					label: "Tingkat resiko",
 					opsi: [
-						"Tingkat resiko rendah",
-						"Tingkat resiko moderat",
-						"Tingkat resiko tinggi",
+						{ text: "Tingkat resiko rendah", value: 1 },
+						{ text: "Tingkat resiko moderat", value: 2 },
+						{ text: "Tingkat resiko tinggi", value: 3 },
 					],
 				},
 				jangka_waktu: {
 					label: "Jangka waktu",
 					opsi: [
-						"Investasi jangka pendek",
-						"Investasi jangka menengah",
-						"Investasi jangka panjang",
+						{ text: "Investasi jangka pendek", value: 1 },
+						{ text: "Investasi jangka menengah", value: 2 },
+						{ text: "Investasi jangka panjang", value: 3 },
 					],
 				},
 				instrumen_investasi: {
 					label: "Pilihlah instrumen investasi dengan aset tertinggi anda ",
 					opsi: [
-						"Reksa dana",
-						"Saham",
-						"Cryptocurrency",
-						"P2P-Lending",
+						{ text: "Reksa dana", value: 1 },
+						{ text: "Saham", value: 2 },
+						{ text: "Cryptocurrency", value: 3 },
+						{ text: "P2P-Lending", value: 4 },
 					],
 				},
 			},
@@ -171,15 +170,21 @@ export default {
 			// console.log(this.selected);
 		},
 		itteration() {
-			if (this.page == 1) this.progress = this.progress + 2; 
+			if (this.page == 1) this.progress = this.progress + 2;
 			else this.progress = this.progress + 3;
 
 			this.page++;
 		},
+		resetForm() {
+			this.$refs.formQ.reset();
+			this.page = 1;
+			this.progress = 0;
+			this.selected.nama = null;
+		},
 		sendDataPost() {
 			this.progress = this.progress = this.progress + 3;
-
-			console.log(this.selected);
+			sendData(this.selected);
+			this.resetForm();
 		},
 		checkName() {
 			if (this.selected.nama == null) {
@@ -221,7 +226,7 @@ export default {
 			}
 		},
 	},
-	created() {
+	mounted() {
 		this.checkName();
 	},
 };
