@@ -12,8 +12,15 @@
 				<b-button variant="primary" href="#">Buka Aplikasi</b-button>
 			</b-jumbotron>
 		</div>
+		<b-progress
+			class="m-2"
+			:value="(progress / 9) * 100"
+			max="100"
+			show-progress
+			animated
+		></b-progress>
 		<!-- PAGE 1 -->
-		<b-form-group class="m-2 ml-4 form-kuesioner">
+		<b-form class="m-2 ml-4 form-kuesioner" @submit.prevent="sendDataPost">
 			<div
 				v-for="(item, name, index) in formHalving(alternatif)"
 				class="mb-3"
@@ -35,16 +42,29 @@
 					:options="item.opsi"
 					v-model="selected[name]"
 					@change="print(index)"
+					required
 				>
 				</b-form-radio-group>
 			</div>
-			<b-button block v-if="page<3" variant="primary" class="mb-2" @click="page++">
+			<b-button
+				block
+				v-if="page < 3"
+				variant="primary"
+				class="mb-2"
+				@click="itteration()"
+			>
 				Berikutnya
 			</b-button>
-			<b-button block v-else variant="primary" class="mb-2" @click="sendDataPost()">
+			<b-button
+				block
+				v-else
+				variant="primary"
+				class="mb-2"
+				type="submit"
+			>
 				Simpan Data
 			</b-button>
-		</b-form-group>
+		</b-form>
 	</div>
 </template>
 <script>
@@ -52,6 +72,7 @@ export default {
 	data() {
 		return {
 			page: 1,
+			progress: 0,
 			selected: {
 				nama: null,
 				umur: null,
@@ -149,6 +170,38 @@ export default {
 		print(name) {
 			// console.log(this.selected);
 		},
+		itteration() {
+			if (this.page == 1) this.progress = this.progress + 2; 
+			else this.progress = this.progress + 3;
+
+			this.page++;
+		},
+		sendDataPost() {
+			this.progress = this.progress = this.progress + 3;
+
+			console.log(this.selected);
+		},
+		checkName() {
+			if (this.selected.nama == null) {
+				this.$swal({
+					title: "Silahkan mengisi data nama",
+					text: "nama panggilan, nama depan atau nama sebutan",
+					input: "text",
+					icon: "question",
+					confirmButtonText: "Berikutnya",
+				}).then((result) => {
+					this.$swal({
+						title: "Halo " + result.value,
+						text: " Terima kasih telah meluangkan waktu untuk mengisi kuesioner :)",
+						icon: "success",
+					});
+					this.selected.nama = result.value;
+					this.progress++;
+				});
+			} else {
+				return 0;
+			}
+		},
 		formHalving(data) {
 			let listAlternatif = {};
 			if (this.page == 1) {
@@ -160,7 +213,7 @@ export default {
 				listAlternatif.penghasilan = data.penghasilan;
 				listAlternatif.tujuan_investasi = data.tujuan_investasi;
 				return listAlternatif;
-			} else if(this.page == 3){
+			} else if (this.page == 3) {
 				listAlternatif.tingkat_resiko = data.tingkat_resiko;
 				listAlternatif.jangka_waktu = data.jangka_waktu;
 				listAlternatif.instrumen_investasi = data.instrumen_investasi;
@@ -169,6 +222,7 @@ export default {
 		},
 	},
 	created() {
+		this.checkName();
 	},
 };
 </script>
