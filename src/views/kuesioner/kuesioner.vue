@@ -179,10 +179,19 @@ export default {
 			this.$refs.formQ.reset();
 			this.page = 1;
 			this.progress = 0;
-			this.selected.nama = null;
+			
+			this.$swal({
+						title: "Halo " + this.selected.nama+"!",
+						text: " Terima kasih telah meluangkan waktu serta berpartisipasi dalam pengisian kuesioner :)",
+						icon: "success",
+					}).then(()=>{
+						this.selected = {};
+						this.checkName();
+					});
+			
 		},
 		sendDataPost() {
-			this.progress = this.progress = this.progress + 3;
+			this.progress = this.progress + 3;
 			sendData(this.selected);
 			this.resetForm();
 		},
@@ -193,13 +202,10 @@ export default {
 					text: "nama panggilan, nama depan atau nama sebutan",
 					input: "text",
 					icon: "question",
+					allowOutsideClick: false,
+					allowEscapeKey: false,
 					confirmButtonText: "Berikutnya",
 				}).then((result) => {
-					this.$swal({
-						title: "Halo " + result.value,
-						text: " Terima kasih telah meluangkan waktu untuk mengisi kuesioner :)",
-						icon: "success",
-					});
 					this.selected.nama = result.value;
 					this.progress++;
 				});
