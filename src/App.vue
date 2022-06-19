@@ -2,7 +2,13 @@
   <div id="app">
     <div id="nav">
       <b-navbar type="dark" variant="info">
-        <b-navbar-brand>NavBar</b-navbar-brand>
+        <b-navbar-brand>App</b-navbar-brand>
+        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        <b-collapse id="nav-collapse" is-nav>
+          <b-navbar-nav>
+            <b-nav-item href="#/kuesioner">Kuesioner</b-nav-item>
+          </b-navbar-nav>
+        </b-collapse>
       </b-navbar>
     </div>
     <router-view></router-view>
