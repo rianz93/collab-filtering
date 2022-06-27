@@ -25,46 +25,47 @@
       <div class="categories">
         <hr />
         <b-card-group deck>
-        <b-card
-          title="Rekomendasi"
-          img-src="investment.png"
-          img-alt="../src/assets/recommendations.png"
-          img-top
-          tag="article"
-          style="max-width: 20rem"
-          class="mb-2 mr-2"
-        >
-          <b-card-text>
-            Temukan rekomendasi instrumen investasi pilihan berdasarkan kriteria
-          </b-card-text>
+          <b-card
+            title="Rekomendasi"
+            img-src="investment.png"
+            img-alt="../src/assets/recommendations.png"
+            img-top
+            tag="article"
+            style="max-width: 20rem"
+            class="mb-2 mr-2"
+          >
+            <b-card-text>
+              Temukan rekomendasi instrumen investasi pilihan berdasarkan
+              kriteria
+            </b-card-text>
 
-          <b-button href="#" variant="outline-success"
-            >Mulai rekomendasi<b-icon
-              class="ml-1"
-              icon="box-arrow-in-right"
-            ></b-icon
-          ></b-button>
-        </b-card>
-        <b-card
-          title="Pengujian"
-          img-src="pengujian.png"
-          img-alt="../src/assets/recommendations.png"
-          img-top
-          tag="article"
-          style="max-width: 20rem"
-          class="mb-2"
-        >
-          <b-card-text>
-            Akurasi pengujian sistem dengan menggunakan SVM
-          </b-card-text>
+            <b-button href="#" variant="outline-success"
+              >Mulai rekomendasi<b-icon
+                class="ml-1"
+                icon="box-arrow-in-right"
+              ></b-icon
+            ></b-button>
+          </b-card>
+          <b-card
+            title="Pengujian"
+            img-src="pengujian.png"
+            img-alt="../src/assets/recommendations.png"
+            img-top
+            tag="article"
+            style="max-width: 20rem"
+            class="mb-2"
+          >
+            <b-card-text>
+              Akurasi pengujian sistem dengan menggunakan SVM
+            </b-card-text>
 
-          <b-button href="#" variant="outline-success"
-            >Lihat pengujian<b-icon
-              class="ml-1"
-              icon="box-arrow-in-right"
-            ></b-icon
-          ></b-button>
-        </b-card>
+            <b-button href="#" @click="test()" variant="outline-success"
+              >Lihat pengujian<b-icon
+                class="ml-1"
+                icon="box-arrow-in-right"
+              ></b-icon
+            ></b-button>
+          </b-card>
         </b-card-group>
       </div>
     </div>
@@ -73,21 +74,30 @@
 </template>
 
 <script>
+import { numerator, denominator } from "../src/functions/functions.js";
 import { getData } from "../src/database/config.js";
 export default {
   data() {
     return {
       child_index: true,
       investor: [],
+      input: {kwkw:1,kwwk:5,awkw:2},
+      input2: {kwkw:3,kwwk:5,awkw:2},
     };
+  },
+  methods: {
+    test() {
+      denominator(this.input, this.input2);
+    },
   },
   created() {
     getData.then((snapshot) => {
       snapshot.docs.forEach((doc) => {
         this.investor.push({ ...doc.data(), id: doc.id });
       });
+      // this.input = this.investor[0];
+      this.test();
     });
-    console.log(this.investor);
   },
 };
 </script>
@@ -104,12 +114,12 @@ export default {
   text-align: left;
   border-radius: 40px;
 }
-.categories img{
+.categories img {
   width: 50%;
   margin: auto;
   padding-top: 20px;
 }
-.categories{
+.categories {
   text-align: center;
 }
 #nav {
