@@ -5,11 +5,12 @@
 				header="Kuesioner"
 				lead="Data investor mengenai instrumen investasi yang dipilih"
 			>
+				<hr>	
 				<p>
 					Sistem rekomendasi instrumen investasi menggunakan algoritma
 					collaborative-filtering
 				</p>
-				<b-button variant="primary" href="#">Buka Aplikasi</b-button>
+				<router-link to="/"><b-button  variant="primary">Buka Aplikasi</b-button></router-link>	
 			</b-jumbotron>
 		</div>
 		<b-progress
@@ -169,6 +170,10 @@ export default {
 		print(name) {
 			// console.log(this.selected);
 		},
+		refreshChildIndex(){
+			this.$parent.child_index = !this.$parent.child_index;
+			console.log(this.$parent.child_index);
+		},
 		itteration() {
 			if (this.page == 1) this.progress = this.progress + 2;
 			else this.progress = this.progress + 3;
@@ -234,7 +239,11 @@ export default {
 	},
 	mounted() {
 		this.checkName();
+		this.refreshChildIndex();
 	},
+	destroyed(){
+		this.refreshChildIndex();
+	}
 };
 </script>
 <style scoped>

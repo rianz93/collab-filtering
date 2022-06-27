@@ -11,6 +11,63 @@
         </b-collapse>
       </b-navbar>
     </div>
+    <div class="db-jumbotron p-2 m-2" v-if="child_index">
+      <b-jumbotron
+        header="UKDLSM"
+        lead="Sistem Rekomendasi Instrumen Investasi Menggunakan Algoritma Collaborative-filtering"
+      >
+        <hr />
+        <p>
+          Selamat datang di Sistem Rekomendasi Instrumen Investasi Menggunakan
+          Algoritma Collaborative-filtering
+        </p>
+      </b-jumbotron>
+      <div class="categories">
+        <hr />
+        <b-card-group deck>
+        <b-card
+          title="Rekomendasi"
+          img-src="investment.png"
+          img-alt="../src/assets/recommendations.png"
+          img-top
+          tag="article"
+          style="max-width: 20rem"
+          class="mb-2 mr-2"
+        >
+          <b-card-text>
+            Temukan rekomendasi instrumen investasi pilihan berdasarkan kriteria
+          </b-card-text>
+
+          <b-button href="#" variant="outline-success"
+            >Mulai rekomendasi<b-icon
+              class="ml-1"
+              icon="box-arrow-in-right"
+            ></b-icon
+          ></b-button>
+        </b-card>
+        <b-card
+          title="Pengujian"
+          img-src="pengujian.png"
+          img-alt="../src/assets/recommendations.png"
+          img-top
+          tag="article"
+          style="max-width: 20rem"
+          class="mb-2"
+        >
+          <b-card-text>
+            Akurasi pengujian sistem dengan menggunakan SVM
+          </b-card-text>
+
+          <b-button href="#" variant="outline-success"
+            >Lihat pengujian<b-icon
+              class="ml-1"
+              icon="box-arrow-in-right"
+            ></b-icon
+          ></b-button>
+        </b-card>
+        </b-card-group>
+      </div>
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -20,6 +77,7 @@ import { getData } from "../src/database/config.js";
 export default {
   data() {
     return {
+      child_index: true,
       investor: [],
     };
   },
@@ -29,7 +87,7 @@ export default {
         this.investor.push({ ...doc.data(), id: doc.id });
       });
     });
-    // console.log(this.investor);
+    console.log(this.investor);
   },
 };
 </script>
@@ -42,8 +100,20 @@ export default {
   color: #2c3e50;
 }
 
+.db-jumbotron {
+  text-align: left;
+  border-radius: 40px;
+}
+.categories img{
+  width: 50%;
+  margin: auto;
+  padding-top: 20px;
+}
+.categories{
+  text-align: center;
+}
 #nav {
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 
 #nav a.router-link-exact-active {
