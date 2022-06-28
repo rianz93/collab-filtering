@@ -5,12 +5,16 @@
 				header="Kuesioner"
 				lead="Data investor mengenai instrumen investasi yang dipilih"
 			>
-				<hr>	
+				<hr />
 				<p>
 					Sistem rekomendasi instrumen investasi menggunakan algoritma
 					collaborative-filtering
 				</p>
-				<router-link to="/"><b-button  variant="primary">Buka Aplikasi</b-button></router-link>	
+				<router-link to="/"
+					><b-button variant="outline-success"
+						>Buka Aplikasi</b-button
+					></router-link
+				>
 			</b-jumbotron>
 		</div>
 		<b-progress
@@ -19,6 +23,7 @@
 			max="100"
 			show-progress
 			animated
+			variant="success"
 		></b-progress>
 		<!-- PAGE 1 -->
 		<b-form
@@ -32,7 +37,7 @@
 			>
 				<hr />
 				<div class="mb-2">
-					<b-badge variant="info" class="p-2 label">
+					<b-badge variant="success" class="p-2 label">
 						<b-icon
 							icon="question-diamond"
 							variant="light"
@@ -54,7 +59,7 @@
 			<b-button
 				block
 				v-if="page < 3"
-				variant="primary"
+				variant="success"
 				class="mb-2"
 				@click="itteration()"
 			>
@@ -139,7 +144,7 @@ export default {
 					],
 				},
 				tingkat_resiko: {
-					label: "Tingkat resiko",
+					label: "Tingkat resiko instrumen yang dipilih",
 					opsi: [
 						{ text: "Tingkat resiko rendah", value: 1 },
 						{ text: "Tingkat resiko moderat", value: 2 },
@@ -147,7 +152,7 @@ export default {
 					],
 				},
 				jangka_waktu: {
-					label: "Jangka waktu",
+					label: "Jangka waktu investasi",
 					opsi: [
 						{ text: "Investasi jangka pendek", value: 1 },
 						{ text: "Investasi jangka menengah", value: 2 },
@@ -170,10 +175,6 @@ export default {
 		print(name) {
 			// console.log(this.selected);
 		},
-		refreshChildIndex(){
-			this.$parent.child_index = !this.$parent.child_index;
-			console.log(this.$parent.child_index);
-		},
 		itteration() {
 			if (this.page == 1) this.progress = this.progress + 2;
 			else this.progress = this.progress + 3;
@@ -184,16 +185,15 @@ export default {
 			this.$refs.formQ.reset();
 			this.page = 1;
 			this.progress = 0;
-			
+
 			this.$swal({
-						title: "Halo " + this.selected.nama+"!",
-						text: " Terima kasih telah meluangkan waktu serta berpartisipasi dalam pengisian kuesioner :)",
-						icon: "success",
-					}).then(()=>{
-						this.selected = {};
-						this.checkName();
-					});
-			
+				title: "Halo " + this.selected.nama + "!",
+				text: " Terima kasih telah meluangkan waktu serta berpartisipasi dalam pengisian kuesioner :)",
+				icon: "success",
+			}).then(() => {
+				this.selected = {};
+				this.checkName();
+			});
 		},
 		sendDataPost() {
 			this.progress = this.progress + 3;
@@ -239,11 +239,11 @@ export default {
 	},
 	mounted() {
 		this.checkName();
-		this.refreshChildIndex();
+		this.$parent.refreshChildIndex();
 	},
-	destroyed(){
-		this.refreshChildIndex();
-	}
+	destroyed() {
+		this.$parent.refreshChildIndex();
+	},
 };
 </script>
 <style scoped>

@@ -5,19 +5,20 @@ export function numerator(input, alternatif) {
 			result += input[index] * alternatif[index];
 		}
 	}
-	// console.log(result);
+	return result;
 }
 
 export function denominator(input, alternatif) {
 	let result = 0;
-	let sqrtResult1 = 0;
-	let sqrtResult2 = 0;
+	let sumSq1 = 0;
+	let sumSq2 = 0;
 	for (let index in input) {
 		if (index != "nama" && index != "id") {
 			sumSq1 += input[index] * input[index];
-			sumSq2 += alternatif[index] * alternatif[index];
+			sumSq2 += alternatif[index]*alternatif[index]; 
 		}
-		result = sumSq1 * sumSq2;
+	
 	}
-	console.log(Math.sqrt(result));
+	result = Math.sqrt(sumSq1*sumSq2);
+	return result;
 }

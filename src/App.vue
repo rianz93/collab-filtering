@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <b-navbar type="dark" variant="info">
+      <b-navbar type="success" variant="success">
         <b-navbar-brand>App</b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
@@ -39,7 +39,7 @@
               kriteria
             </b-card-text>
 
-            <b-button href="#" variant="outline-success"
+            <b-button href="/#/rekomendasi" variant="outline-success"
               >Mulai rekomendasi<b-icon
                 class="ml-1"
                 icon="box-arrow-in-right"
@@ -56,7 +56,7 @@
             class="mb-2"
           >
             <b-card-text>
-              Akurasi pengujian sistem dengan menggunakan SVM
+              Akurasi pengujian sistem dengan menggunakan MAE
             </b-card-text>
 
             <b-button href="#" @click="test()" variant="outline-success"
@@ -81,13 +81,20 @@ export default {
     return {
       child_index: true,
       investor: [],
-      input: {kwkw:1,kwwk:5,awkw:2},
-      input2: {kwkw:3,kwwk:5,awkw:2},
+      input: {},
     };
   },
   methods: {
     test() {
-      denominator(this.input, this.input2);
+      for (let index in this.investor) {
+        console.log(
+          numerator(this.input, this.investor[index]) /
+            denominator(this.input, this.investor[index])
+        );
+      }
+    },
+    refreshChildIndex() {
+      this.child_index = !this.child_index;
     },
   },
   created() {
@@ -95,7 +102,7 @@ export default {
       snapshot.docs.forEach((doc) => {
         this.investor.push({ ...doc.data(), id: doc.id });
       });
-      // this.input = this.investor[0];
+      this.input = this.investor[0];
       this.test();
     });
   },
@@ -124,6 +131,7 @@ export default {
 }
 #nav {
   margin-bottom: 10px;
+  color: #ffffff;
 }
 
 #nav a.router-link-exact-active {
