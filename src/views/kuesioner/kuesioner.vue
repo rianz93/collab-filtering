@@ -17,7 +17,14 @@
 				>
 			</b-jumbotron>
 		</div>
-		<b-progress
+		<b-alert v-if="page == 4" class="mt-4 p-4" show variant="success"
+			>Data kuesioner telah tersimpan, Terima kasih..</b-alert
+		>
+		<!-- JUMBOTRON DIVIDER -->
+		
+
+		<div v-else>
+			<b-progress
 			class="m-2"
 			:value="(progress / 9) * 100"
 			max="100"
@@ -25,50 +32,56 @@
 			animated
 			variant="success"
 		></b-progress>
-		<!-- PAGE 1 -->
-		<b-form
-			class="m-2 ml-4 form-kuesioner"
-			ref="formQ"
-			@submit.prevent="sendDataPost()"
-		>
-			<div
-				v-for="(item, name, index) in formHalving(alternatif)"
-				class="mb-3"
+			<b-form
+				class="m-2 ml-4 form-kuesioner"
+				ref="formQ"
+				@submit.prevent="sendDataPost()"
 			>
-				<hr />
-				<div class="mb-2">
-					<b-badge variant="success" class="p-2 label">
-						<b-icon
-							icon="question-diamond"
-							variant="light"
-							class="mr-1"
-						>
-						</b-icon>
-						{{ item.label }}</b-badge
-					>
-				</div>
-
-				<b-form-radio-group
-					:options="item.opsi"
-					v-model="selected[name]"
-					@change="print(index)"
-					required
+				<div
+					v-for="(item, name, index) in formHalving(alternatif)"
+					class="mb-3"
 				>
-				</b-form-radio-group>
-			</div>
-			<b-button
-				block
-				v-if="page < 3"
-				variant="success"
-				class="mb-2"
-				@click="itteration()"
-			>
-				Berikutnya
-			</b-button>
-			<b-button block v-else variant="primary" class="mb-2" type="submit">
-				Simpan Data
-			</b-button>
-		</b-form>
+					<hr />
+					<div class="mb-2">
+						<b-badge variant="success" class="p-2 label">
+							<b-icon
+								icon="question-diamond"
+								variant="light"
+								class="mr-1"
+							>
+							</b-icon>
+							{{ item.label }}</b-badge
+						>
+					</div>
+
+					<b-form-radio-group
+						:options="item.opsi"
+						v-model="selected[name]"
+						@change="print(index)"
+						required
+					>
+					</b-form-radio-group>
+				</div>
+				<b-button
+					block
+					v-if="page < 3"
+					variant="success"
+					class="mb-2"
+					@click="itteration()"
+				>
+					Berikutnya
+				</b-button>
+				<b-button
+					block
+					v-else
+					variant="primary"
+					class="mb-2"
+					type="submit"
+				>
+					Simpan Data
+				</b-button>
+			</b-form>
+		</div>
 	</div>
 </template>
 <script>
@@ -76,7 +89,7 @@ import { sendData } from "../../database/config.js";
 export default {
 	data() {
 		return {
-			page: 1,
+			page: 4,
 			progress: 0,
 			selected: {
 				nama: null,
@@ -183,7 +196,7 @@ export default {
 		},
 		resetForm() {
 			this.$refs.formQ.reset();
-			this.page = 1;
+			this.page = 4;
 			this.progress = 0;
 
 			this.$swal({
@@ -201,7 +214,7 @@ export default {
 			this.resetForm();
 		},
 		checkName() {
-			if (this.selected.nama == null) {
+			if (this.selected.nama == null && this.page < 4) {
 				this.$swal({
 					title: "Silahkan mengisi data nama",
 					text: "nama panggilan, nama depan atau nama sebutan",
