@@ -21,17 +21,16 @@
 			>Data kuesioner telah tersimpan, Terima kasih..</b-alert
 		>
 		<!-- JUMBOTRON DIVIDER -->
-		
 
 		<div v-else>
 			<b-progress
-			class="m-2"
-			:value="(progress / 9) * 100"
-			max="100"
-			show-progress
-			animated
-			variant="success"
-		></b-progress>
+				class="m-2"
+				:value="(progress / 9) * 100"
+				max="100"
+				show-progress
+				animated
+				variant="success"
+			></b-progress>
 			<b-form
 				class="m-2 ml-4 form-kuesioner"
 				ref="formQ"
@@ -89,10 +88,11 @@ import { sendData } from "../../database/config.js";
 export default {
 	data() {
 		return {
-			page: 4,
+			page: 1,
 			progress: 0,
 			selected: {
 				nama: null,
+				email: null,
 				umur: null,
 				status_pekerjaan: null,
 				sumber_dana: null,
@@ -224,8 +224,19 @@ export default {
 					allowEscapeKey: false,
 					confirmButtonText: "Berikutnya",
 				}).then((result) => {
-					this.selected.nama = result.value;
-					this.progress++;
+					this.selected.nama = result.value	;
+					this.$swal({
+						title: "Silahkan mengisi data email",
+						text:"mohon menggunakan alamat email yang valid",
+						input: "email",
+						icon: "question",
+						allowEscapeKey: false,
+						allowOutsideClick: false,
+						confirmButtonText: "Berikutnya",
+					}).then((result) => {
+						this.selected.email = result.value;
+						this.progress++;
+					});
 				});
 			} else {
 				return 0;
