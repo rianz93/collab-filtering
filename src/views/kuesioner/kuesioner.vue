@@ -11,7 +11,7 @@
 					collaborative-filtering
 				</p>
 				<router-link to="/"
-					><b-button variant="outline-success"
+					><b-button disabled variant="outline-success"
 						>Buka Aplikasi</b-button
 					></router-link
 				>

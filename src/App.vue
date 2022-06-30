@@ -82,16 +82,24 @@ export default {
       child_index: true,
       investor: [],
       input: {},
+      arrayRanking: [],
     };
   },
   methods: {
     test() {
+      let arrayIndex = 0;
       for (let index in this.investor) {
-        console.log(
+        let result =
           numerator(this.input, this.investor[index]) /
-            denominator(this.input, this.investor[index])
-        );
-      }
+          denominator(this.input, this.investor[index]);
+        this.arrayRanking.push({
+          id: this.investor[index].id,
+          similarity: result,
+          instrumen_investasi:this.investor[index].instrumen_investasi,
+        });
+        
+        arrayIndex++;
+      }console.log(this.arrayRanking);
     },
     refreshChildIndex() {
       this.child_index = !this.child_index;

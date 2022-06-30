@@ -1,7 +1,7 @@
 export function numerator(input, alternatif) {
 	let result = 0;
 	for (let index in input) {
-		if (index != "nama" && index != "id") {
+		if (index != "nama" && index != "id" && index != "email") {
 			result += input[index] * alternatif[index];
 		}
 	}
@@ -13,7 +13,7 @@ export function denominator(input, alternatif) {
 	let sumSq1 = 0;
 	let sumSq2 = 0;
 	for (let index in input) {
-		if (index != "nama" && index != "id") {
+		if (index != "nama" && index != "id" && index != "email") {
 			sumSq1 += input[index] * input[index];
 			sumSq2 += alternatif[index]*alternatif[index]; 
 		}
