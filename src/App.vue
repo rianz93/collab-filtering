@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <div id="nav" >
       <b-navbar type="success" variant="success">
         <b-navbar-brand>App</b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item href="#/kuesioner">Kuesioner</b-nav-item>
+            <div style="cursor:pointer" @click="replace()">Kuesioner</div>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -86,12 +86,16 @@ export default {
     };
   },
   methods: {
+    replace(){
+      this.$router.replace("/kuesioner");
+    },
     test() {
       let arrayIndex = 0;
       for (let index in this.investor) {
         let result =
           numerator(this.input, this.investor[index]) /
           denominator(this.input, this.investor[index]);
+          
         this.arrayRanking.push({
           id: this.investor[index].id,
           similarity: result,

@@ -73,7 +73,7 @@
 				<b-button
 					block
 					v-else
-					variant="primary"
+					variant="success"
 					class="mb-2"
 					type="submit"
 				>
