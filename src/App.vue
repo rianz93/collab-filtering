@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <div id="nav" >
+    <div id="nav">
       <b-navbar type="success" variant="success">
         <b-navbar-brand>App</b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <div style="cursor:pointer" @click="replace()">Kuesioner</div>
+            <div style="cursor: pointer" @click="replace()">Kuesioner</div>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -86,7 +86,21 @@ export default {
     };
   },
   methods: {
-    replace(){
+    getTopN(arr, prop, n) {
+      // clone before sorting, to preserve the original array
+      var clone = arr.slice(0);
+
+      // sort descending
+      clone.sort((x, y) => {
+        if (x[prop] == y[prop]) return 0;
+        else if (x[prop] < y[prop]) return 1;
+        else return -1;
+      });
+
+      return clone.slice(0, n || 1);
+    },
+
+    replace() {
       this.$router.replace("/kuesioner");
     },
     test() {
@@ -95,15 +109,18 @@ export default {
         let result =
           numerator(this.input, this.investor[index]) /
           denominator(this.input, this.investor[index]);
-          
+
         this.arrayRanking.push({
           id: this.investor[index].id,
           similarity: result,
-          instrumen_investasi:this.investor[index].instrumen_investasi,
+          instrumen_investasi: this.investor[index].instrumen_investasi,
         });
-        
+
         arrayIndex++;
-      }console.log(this.arrayRanking);
+      }
+      console.log(this.arrayRanking);
+      let topScorer = this.getTopN(this.arrayRanking, "similarity",3);
+      console.log(topScorer);
     },
     refreshChildIndex() {
       this.child_index = !this.child_index;
@@ -114,7 +131,7 @@ export default {
       snapshot.docs.forEach((doc) => {
         this.investor.push({ ...doc.data(), id: doc.id });
       });
-      this.input = this.investor[0];
+      this.input = this.investor[2];
       this.test();
     });
   },
