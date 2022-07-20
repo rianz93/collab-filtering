@@ -132,7 +132,7 @@ export default {
         this.investor.push({ ...doc.data(), id: doc.id });
       });
       this.input = this.investor[2];
-      this.test();
+      // this.test();
     });
   },
 };

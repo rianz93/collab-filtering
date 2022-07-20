@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="pl-2 pr-2">
+		<div v-if="page < 4" class="pl-2 pr-2">
 			<b-jumbotron
 				header="Rekomendasi"
 				lead="Pilihlah atribut yang sesuai dengan kriteria anda "
@@ -10,84 +10,155 @@
 					Sistem rekomendasi instrumen investasi menggunakan algoritma
 					collaborative-filtering
 				</p>
-				<router-link to="/"
-					><b-button variant="outline-success"
-						>Buka Aplikasi</b-button
-					></router-link
-				>
 			</b-jumbotron>
 		</div>
 		<div>
-			<b-alert v-if="page == 4" class="mt-4 p-4" show variant="success"
-			>Data kuesioner telah tersimpan, Terima kasih..</b-alert
-		>
-		<!-- JUMBOTRON DIVIDER -->
-
-		<div v-else>
-			<b-progress
-				class="m-2"
-				:value="(progress / 9) * 100"
-				max="100"
-				show-progress
-				animated
-				variant="success"
-			></b-progress>
-			<b-form
-				class="m-2 ml-4 form-rekomendasi"
-				ref="formQ"
-				@submit.prevent="sendDataPost()"
-			>
+			<div v-if="page == 4" class="mb-2">
+				<DoughnutChart :investmentRank="investmentRank" />
+				<hr />
+				<h4 class="first-header ml-4" style="text-align: left">
+					<b-icon
+						icon="card-checklist"
+						class="mr-1"
+						variant="success"
+					></b-icon>
+					Hasil Rekomendasi
+				</h4>
+				<div class="mt-4"></div>
 				<div
-					v-for="(item, name, index) in formHalving(alternatif)"
-					class="mb-3"
+					v-for="(item, index) in investmentRank"
+					class="ml-4"
+					style="display: flex"
 				>
-					<hr />
-					<div class="mb-2">
-						<b-badge variant="success" class="p-2 label">
-							<b-icon
-								icon="question-diamond"
-								variant="light"
-								class="mr-1"
-							>
-							</b-icon>
-							{{ item.label }}</b-badge
+					<div
+						v-if="index == 0 && item > 0"
+						class="mb-4 instrumen-label"
+					>
+						Reksa Dana
+					</div>
+					<div
+						v-if="index == 1 && item > 0"
+						class="mb-4 instrumen-label"
+					>
+						Saham
+					</div>
+					<div
+						v-if="index == 2 && item > 0"
+						class="mb-4 instrumen-label"
+					>
+						Cryptocurrency
+					</div>
+					<div
+						v-if="index == 3 && item > 0"
+						class="mb-4 instrumen-label"
+					>
+						P2P-Lending
+					</div>
+					<div class="adjustment-progress" v-if="item > 0">
+						<b-progress
+							height="2rem"
+							max="100"
+							:variant="
+								index == 0
+									? 'success'
+									: index == 1
+									? 'primary'
+									: index == 2
+									? 'warning'
+									: 'info'
+							"
+							show-progress
+						>
+							<b-progress-bar :value="item" :label="`${item}%`">
+							</b-progress-bar>
+						</b-progress>
+					</div>
+					<div>
+						<b-button
+							style="font-size: 14px"
+							v-if="item > 0"
+							variant="outline-primary"
+							class="ml-2"
+							><b-icon icon="info-circle" class="mr-1"></b-icon
+							>Detail</b-button
 						>
 					</div>
-
-					<b-form-radio-group
-						:options="item.opsi"
-						v-model="selected[name]"
-						required
-					>
-					</b-form-radio-group>
 				</div>
-				<b-button
-					block
-					v-if="page < 3"
+			</div>
+			<!-- JUMBOTRON DIVIDER -->
+
+			<div v-else>
+				<b-progress
+					class="m-2"
+					:value="(progress / 9) * 100"
+					max="100"
+					show-progress
+					animated
 					variant="success"
-					class="mb-2"
-					@click="itteration()"
+				></b-progress>
+				<b-form
+					class="m-2 ml-4 form-rekomendasi"
+					ref="formQ"
+					@submit.prevent="rankCalculate()"
 				>
-					Berikutnya
-				</b-button>
-				<b-button
-					block
-					v-else
-					variant="success"
-					class="mb-2"
-					type="submit"
-				>
-					Lihat Rekomendasi
-				</b-button>
-			</b-form>
-		</div>
+					<div
+						v-for="(item, name, index) in formHalving(alternatif)"
+						class="mb-3"
+					>
+						<hr />
+						<div class="mb-2">
+							<b-badge variant="success" class="p-2 label">
+								<b-icon
+									icon="question-diamond"
+									variant="light"
+									class="mr-1"
+								>
+								</b-icon>
+								{{ item.label }}</b-badge
+							>
+						</div>
+
+						<b-form-radio-group
+							:options="item.opsi"
+							v-model="selected[name]"
+							required
+						>
+						</b-form-radio-group>
+					</div>
+					<b-button
+						block
+						v-if="page < 3"
+						variant="success"
+						class="mb-2"
+						@click="itteration()"
+					>
+						Berikutnya
+					</b-button>
+					<b-button
+						block
+						v-else
+						variant="success"
+						class="mb-2"
+						type="submit"
+					>
+						Lihat Rekomendasi
+					</b-button>
+				</b-form>
+			</div>
 		</div>
 	</div>
 </template>
 <script>
+import DoughnutChart from "../../components/doughnutChart.vue";
+import { numerator, denominator } from "../../functions/functions.js";
+import { getData } from "../../database/config.js";
 export default {
+	components: { DoughnutChart },
 	data() {
 		return {
+			investor: {},
+			arrayRanking: [],
+			investmentRank: [0, 0, 0, 0],
 			page: 1,
 			progress: 0,
 			selected: {
@@ -100,7 +171,6 @@ export default {
 				tujuan_investasi: null,
 				tingkat_resiko: null,
 				jangka_waktu: null,
-				instrumen_investasi: null,
 			},
 			alternatif: {
 				umur: {
@@ -176,6 +246,86 @@ export default {
 		};
 	},
 	methods: {
+		getTopN(arr, prop, n) {
+			// clone before sorting, to preserve the original array
+			var clone = arr.slice(0);
+
+			// sort descending
+			clone.sort((x, y) => {
+				if (x[prop] == y[prop]) return 0;
+				else if (x[prop] < y[prop]) return 1;
+				else return -1;
+			});
+
+			return clone.slice(0, n || 1);
+		},
+		rankCalculate() {
+			this.investor = this.$parent.investor;
+			let arrayIndex = 0;
+			for (let index in this.investor) {
+				let result =
+					numerator(this.selected, this.investor[index]) /
+					denominator(this.selected, this.investor[index]);
+
+				this.arrayRanking.push({
+					id: this.investor[index].id,
+					similarity: result,
+					instrumen_investasi:
+						this.investor[index].instrumen_investasi,
+				});
+
+				arrayIndex++;
+			}
+			let topThree = this.getTopN(this.arrayRanking, "similarity", 3);
+			console.log("this is top tthree : "+topThree);
+
+			switch(topThree[0].instrumen_investasi){
+				case 1:
+					this.investmentRank[0] += 50;
+					break;
+				case 2: 
+					this.investmentRank[1] += 50;
+					break;
+				case 3:
+					this.investmentRank[2] += 50;
+					break;
+				case 4:
+					this.investmentRank[3] += 50
+					break;
+			}
+
+			switch(topThree[1].instrumen_investasi){
+				case 1:
+					this.investmentRank[0] += 30;
+					break;
+				case 2: 
+					this.investmentRank[1] += 30;
+					break;
+				case 3:
+					this.investmentRank[2] += 30;
+					break;
+				case 4:
+					this.investmentRank[3] += 30
+					break;
+			}
+
+			switch(topThree[2].instrumen_investasi){
+				case 1:
+					this.investmentRank[0] += 20;
+					break;
+				case 2: 
+					this.investmentRank[1] += 20;
+					break;
+				case 3:
+					this.investmentRank[2] += 20;
+					break;
+				case 4:
+					this.investmentRank[3] += 20
+					break;
+			}	
+			console.log(this.investmentRank);
+			this.page++;
+		},
 		itteration() {
 			if (this.page == 1) this.progress = this.progress + 2;
 			else this.progress = this.progress + 3;
@@ -193,10 +343,10 @@ export default {
 					allowEscapeKey: false,
 					confirmButtonText: "Berikutnya",
 				}).then((result) => {
-					this.selected.nama = result.value	;
+					this.selected.nama = result.value;
 					this.$swal({
 						title: "Silahkan mengisi data email",
-						text:"mohon menggunakan alamat email yang valid",
+						text: "mohon menggunakan alamat email yang valid",
 						input: "email",
 						icon: "question",
 						allowEscapeKey: false,
@@ -253,8 +403,19 @@ export default {
 };
 </script>
 <style>
-	.form-rekomendasi{
-		text-align: left;
-		font-size: 14px;
-	}
+.form-rekomendasi {
+	text-align: left;
+	font-size: 14px;
+}
+.adjustment-progress {
+	width: 80%;
+}
+.instrumen-label {
+	width: 140px;
+	text-align: left;
+	font-weight: 700;
+}
+.first-header {
+	color: #28a745;
+}
 </style>
