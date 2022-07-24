@@ -2,7 +2,7 @@
   <div id="app">
     <div id="nav">
       <b-navbar type="success" variant="success">
-        <b-navbar-brand>App</b-navbar-brand>
+        <b-navbar-brand @click="home" style="cursor:pointer;">App</b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
@@ -59,7 +59,7 @@
               Akurasi pengujian sistem dengan menggunakan MAE
             </b-card-text>
 
-            <b-button href="#" @click="test()" variant="outline-success"
+            <b-button href="/#/pengujian"  variant="outline-success"
               >Lihat pengujian<b-icon
                 class="ml-1"
                 icon="box-arrow-in-right"
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { numerator, denominator } from "../src/functions/functions.js";
+import { numerator, denominator, getTopN } from "../src/functions/functions.js";
 import { getData } from "../src/database/config.js";
 export default {
   data() {
@@ -86,20 +86,9 @@ export default {
     };
   },
   methods: {
-    getTopN(arr, prop, n) {
-      // clone before sorting, to preserve the original array
-      var clone = arr.slice(0);
-
-      // sort descending
-      clone.sort((x, y) => {
-        if (x[prop] == y[prop]) return 0;
-        else if (x[prop] < y[prop]) return 1;
-        else return -1;
-      });
-
-      return clone.slice(0, n || 1);
+    home(){
+      this.$router.replace("/")
     },
-
     replace() {
       this.$router.replace("/kuesioner");
     },
@@ -119,7 +108,7 @@ export default {
         arrayIndex++;
       }
       console.log(this.arrayRanking);
-      let topScorer = this.getTopN(this.arrayRanking, "similarity",3);
+      let topScorer = getTopN(this.arrayRanking, "similarity",3);
       console.log(topScorer);
     },
     refreshChildIndex() {
@@ -133,6 +122,7 @@ export default {
       });
       this.input = this.investor[2];
       // this.test();
+      console.log(this.investor);
     });
   },
 };

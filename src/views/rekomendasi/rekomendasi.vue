@@ -150,8 +150,8 @@
 </template>
 <script>
 import DoughnutChart from "../../components/doughnutChart.vue";
-import { numerator, denominator } from "../../functions/functions.js";
-import { getData } from "../../database/config.js";
+import { numerator, denominator, getTopN } from "../../functions/functions.js";
+
 export default {
 	components: { DoughnutChart },
 	data() {
@@ -246,19 +246,6 @@ export default {
 		};
 	},
 	methods: {
-		getTopN(arr, prop, n) {
-			// clone before sorting, to preserve the original array
-			var clone = arr.slice(0);
-
-			// sort descending
-			clone.sort((x, y) => {
-				if (x[prop] == y[prop]) return 0;
-				else if (x[prop] < y[prop]) return 1;
-				else return -1;
-			});
-
-			return clone.slice(0, n || 1);
-		},
 		rankCalculate() {
 			this.investor = this.$parent.investor;
 			let arrayIndex = 0;
@@ -276,9 +263,8 @@ export default {
 
 				arrayIndex++;
 			}
-			let topThree = this.getTopN(this.arrayRanking, "similarity", 3);
-			console.log("this is top tthree : "+topThree);
-
+			let topThree = getTopN(this.arrayRanking, "similarity", 3);
+			console.log(topThree);
 			switch(topThree[0].instrumen_investasi){
 				case 1:
 					this.investmentRank[0] += 50;
@@ -322,7 +308,9 @@ export default {
 				case 4:
 					this.investmentRank[3] += 20
 					break;
-			}	
+			}
+
+			
 			console.log(this.investmentRank);
 			this.page++;
 		},
