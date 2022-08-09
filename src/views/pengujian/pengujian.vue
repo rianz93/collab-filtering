@@ -52,9 +52,7 @@
 						></b-spinner
 						>Loading.....</span
 					>
-					<span v-else>
-						Mulai pengujian
-					</span>
+					<span v-else> Mulai pengujian </span>
 				</b-button>
 			</b-form>
 			<hr />
@@ -77,8 +75,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td></td>
+					<tr v-for="(item, index) in content">
+						<td>{{ index + 1 }}</td>
+						<td>{{ `Percobaan ke ` + (index + 1) }}</td>
+						<td>{{ item.mae }}</td>
+						<td>{{ item.akurasi + `%` }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -91,10 +92,13 @@ import {
 	denominator,
 	getTopN,
 	getPercentage,
+	removeAttr,
 } from "../../functions/functions.js";
 export default {
 	data() {
 		return {
+			content: [],
+			arrayRanking: [],
 			mulaiBtn: true,
 			investor: {},
 			echoTime: null,
@@ -135,9 +139,86 @@ export default {
 		mulaiBtnValue() {
 			this.mulaiBtn = false;
 		},
+		rankCalculate(training, comparator) {
+			for (let i in comparator) {
+				this.arrayRanking[i] = [];
+				for (let k in training) {
+					let result =
+						numerator(comparator[i], training[k]) /
+						denominator(comparator[i], training[k]);
+
+					this.arrayRanking[i].push({
+						id: training[k].id,
+						similarity: result,
+						instrumen_investasi: training[k].instrumen_investasi,
+					});
+				}
+			}
+			// console.log(this.arrayRanking)
+			return this.arrayRanking;
+		},
+
+		reAddAttr(testing, arrOfSimilarities) {
+			let first = [];
+			let mae = [];
+			let maeSum = 0;
+			let fail = 0;
+			for (let index in testing) {
+				first[index] = getTopN(
+					arrOfSimilarities[index],
+					"similarity",
+					4
+				);
+				for (let k = 0; k < first[index].length; k++) {
+					if (
+						testing[index].instrumen_investasi ==
+						first[index][k].instrumen_investasi
+					) {
+						fail++;
+						break;
+					}
+					mae[index] = Math.abs(testing[index].instrumen_investasi - first[index][0].instrumen_investasi) ;
+				}
+			}
+			
+			mae = Array.from(mae, item => item || 0);
+			for(let x = 0; x<mae.length; x++){
+				maeSum += mae[x];
+			}
+			// console.log(mae);
+			console.log(maeSum)
+			let result = {
+				precision:((fail / testing.length) * 100).toFixed(1),
+				mae: (maeSum/mae.length).toFixed(2)
+			}
+			return result ;
+		},
+
 		startTesting() {
-			let prepare = getPercentage(this.investor, this.percentage);
-			console.log(prepare);
+			this.content = [];
+			for (let index = 0; index < this.echoTime; index++) {
+				let prepare = getPercentage(this.investor, this.percentage);
+				prepare.comparator = removeAttr(
+					prepare.testing,
+					"instrumen_investasi"
+				);
+
+				let arrOfSimilarities = this.rankCalculate(
+					prepare.training,
+					prepare.comparator
+				);
+
+				let content = this.reAddAttr(
+					prepare.testing,
+					arrOfSimilarities
+				);
+				this.content.push({
+					akurasi: content.precision,
+					mae:content.mae
+				});
+
+				// console.log(this.content);
+			}
 		},
 	},
 	created() {
