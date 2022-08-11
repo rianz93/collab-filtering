@@ -87,7 +87,7 @@
 				</div>
 				<hr />
 
-				<div v-if="showDesc">
+				<div v-if="addDesc">
 					<h4 class="first-header ml-4" style="text-align: left">
 						<b-icon
 							icon="card-text"
@@ -98,7 +98,7 @@
 					</h4>
 					<b-list-group
 						v-for="(item, index) in desc"
-						class="desc ml-4 mb-4 mt-4"
+						class="desc ml-4 mb-2"
 					>
 						<b-list-group-item v-if="item.show" class="descLabel">
 							<b-icon
@@ -356,8 +356,6 @@ export default {
 		return {
 			investor: {},
 			arrayRanking: [],
-			investmentRank: [50, 10, 10, 30],
-			addDesc: true,
 			desc: {
 				ReksaDana: {
 					show: false,
@@ -384,10 +382,12 @@ export default {
 					desc2:`Jumlah keuntungan didapatkan dari bunga pinjaman, proses peminjaman uang memiliki periode waktu tertentu. Pendana atau pemberi pinjaman bisa melihat detail data peminjam, seperti jenis bisnis, sudah berapa lama bisnis beroperasi, tujuan pinjaman, pendapatan, riwayat keuangan dan lain-lain`,
 				},
 			},
-			page: 4,
+			investmentRank: [0,0,0,0],
+			addDesc: false,
+			page: 1,
 			progress: 0,
 			selected: {
-				nama: "r",
+				nama: null,
 				email: null,
 				umur: null,
 				status_pekerjaan: null,
