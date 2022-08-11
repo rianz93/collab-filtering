@@ -431,7 +431,7 @@ export default {
 					],
 				},
 				penghasilan: {
-					label: "Pilih kategori jumlah penghasilan anda",
+					label: "Pilih kategori jumlah penghasilan bulanan anda",
 					opsi: [
 						{ text: "Tidak berpenghasilan", value: 1 },
 						{ text: "1 juta - 3 juta", value: 2 },
@@ -452,7 +452,7 @@ export default {
 					],
 				},
 				tingkat_resiko: {
-					label: "Tingkat resiko instrumen yang dipilih",
+					label: "Pilih tingkat resiko yang diinginkan",
 					opsi: [
 						{ text: "Tingkat resiko rendah", value: 1 },
 						{ text: "Tingkat resiko moderat", value: 2 },
